@@ -1,7 +1,7 @@
 {
-  "name": "sample-api",
+  "name": "accounting-cilient-api",
   "version": "1.0.0",
-  "description": "API for MEAN Social Network",
+  "description": "API Accounting Client",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
