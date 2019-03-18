@@ -1,0 +1,16 @@
+node_modules
+build
+npm-debug.log
+.DS_Store
+######################
+# Intellij
+######################
+.idea/
+*.iml
+*.iws
+*.ipr
+*.ids
+*.orig
+classes/
+out/
+/photos
