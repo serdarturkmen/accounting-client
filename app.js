@@ -74,8 +74,9 @@ var databaseConfig = function (connectionUrl) {
     Employee.sync({force: true}).then(() => {
         // Now the `users` table in the database corresponds to the model definition
         return Employee.create({
-            firstName: 'Serdar',
-            lastName: 'Turkmen'
+            firstName: 'test',
+            lastName: 'employee',
+            age:30
         });
     });
 
