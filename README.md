@@ -18,3 +18,7 @@ INSERT INTO employee (id, firstname, lastname, age) VALUES (1, 'Serdar', 'Turkme
 select * from employees;
 
 drop table employee;
+
+
+**
+%AppData%\Microsoft\Windows\Start Menu\Programs\Startup\
