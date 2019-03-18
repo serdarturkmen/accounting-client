@@ -23,7 +23,7 @@ app.use(function (req, res, next) {
 });
 
 //Setting up server
-var server = app.listen(process.env.PORT || 8080, function () {
+var server = app.listen(process.env.PORT || 8000, function () {
     var port = server.address().port;
     console.log("App now running on port", port);
 });
@@ -92,8 +92,15 @@ rule.second = 5;
 var j = schedule.scheduleJob(rule, function(fireDate){
 
     Employee.findAll().then(employees => {
-        console.log("All users:", JSON.stringify(employees, null, 4));
+        request.post({
+            headers: {'content-type' : 'application/json'},
+            url:     'http://localhost:8080/api/person',
+            body: JSON.stringify(employees[0])
+        }, function(error, response, body){
+            console.log("response is: ", body);
+        });
     });
+
     console.log('This job was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
 });
 
