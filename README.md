@@ -21,5 +21,7 @@
 
 
 > shell:startup
+
 > %AppData%\Microsoft\Windows\Start Menu\Programs\Startup\
+
 > .vbs kısayol olustur
