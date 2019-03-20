@@ -87,7 +87,7 @@ var databaseConfig = function (connectionUrl) {
 
 // rule for cron job
 var rule = new schedule.RecurrenceRule();
-rule.second = 5;
+rule.second = 15;
 
 var j = schedule.scheduleJob(rule, function(fireDate){
 
@@ -95,7 +95,7 @@ var j = schedule.scheduleJob(rule, function(fireDate){
         request.post({
             headers: {'content-type' : 'application/json'},
             url:     'http://localhost:8080/api/person',
-            body: JSON.stringify(employees[0])
+            body: JSON.stringify(employees)
         }, function(error, response, body){
             console.log("response is: ", body);
         });
