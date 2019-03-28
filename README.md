@@ -1,3 +1,18 @@
+1) Install node.js
+
+2) Install dependencies:
+
+	In the application folder type "npm install"
+	
+3) Set enviromental variables for .env file(create if not exist):
+    PORT=8090
+    USERNAME=sa
+    SERVER=localhost
+    DATABASE=master
+    PASSWORD=db_password
+    
+4) Start server by typing npm start
+    
 ### Mssql docker config
 > docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=Temp2121x' -p 1433:1433 -d mcr.microsoft.com/mssql/server:2017-latest
 > /Users/serdarturkmen/Desktop/impektra/muhasebe/docker-compose.yml

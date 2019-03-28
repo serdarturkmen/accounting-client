@@ -1,14 +1,17 @@
 //Initiallising node modules
 var express = require("express");
 var bodyParser = require("body-parser");
-var sql = require("mssql");
 var app = express();
-const Sequelize = require('sequelize');
 var schedule = require('node-schedule');
 const request = require('request');
 const EmployeeModel = require('./api/models/employee')
+const Sequelize = require('sequelize');
 
 const db = require('./api/config/db-config');
+const sequelize = db.sequelize;
+
+const dotenv = require('dotenv');
+dotenv.config();
 
 // Body Parser Middleware
 app.use(bodyParser.json());
@@ -28,13 +31,14 @@ var server = app.listen(process.env.PORT || 8000, function () {
     console.log("App now running on port", port);
 });
 
+
 //Initiallising connection string
-var dbConfig = {
-    user: 'sa',
-    password: 'Temp2121x',
-    server: 'localhost',
-    database: 'master'
-};
+// var dbConfig = {
+//     username: process.env.USERNAME,
+//     password: process.env.PASSWORD || 'Temp2121x',
+//     server: process.env.SERVER || 'localhost',
+//     database: process.env.DATABASE || 'dene'
+// };
 
 var connectionUrl = 'mssql://sa:Temp2121x@localhost:1433/master';
 
@@ -42,80 +46,109 @@ var connectionUrl = 'mssql://sa:Temp2121x@localhost:1433/master';
 
 // Option 2: Using a connection URI
 
-var Employee = null;
+// const sequelize = new Sequelize(connectionUrl, {
+//     // ...
+//     dialect: 'mssql',
+//     pool: {
+//         max: 5,
+//         min: 0,
+//         acquire: 30000,
+//         idle: 10000
+//     },
+//     define: {
+//         timestamps: false,
+//         freezeTableName: true
+//     }
+// });
 
-var databaseConfig = function (connectionUrl) {
-    const sequelize = new Sequelize(connectionUrl, {
-        // ...
-        pool: {
-            max: 5,
-            min: 0,
-            acquire: 30000,
-            idle: 10000
-        },
-        define: {
-            timestamps: false,
-            freezeTableName: true
-        }
-    });
+// const sequelize = new Sequelize({
+//     dialect: 'mssql',
+//     username: dbConfig.username,
+//     database: dbConfig.database,
+//     host: dbConfig.server,
+//     port: '1433',
+//     password: dbConfig.password,
+//     pool: {
+//         max: 5,
+//         min: 0,
+//         acquire: 30000,
+//         idle: 10000
+//     },
+//     define: {
+//         timestamps: false,
+//         freezeTableName: true
+//     }
+// })
+//
+//
+// sequelize
+//     .authenticate()
+//     .then(() => {
+//         console.log('Connection has been established successfully.');
+//     })
+//     .catch(err => {
+//         console.error('Unable to connect to the database:', err);
+//     });
+// Employee = EmployeeModel(sequelize, Sequelize)
+//
+// // Note: using `force: true` will drop the table if it already exists
+// Employee.sync({force: true}).then(() => {
+//     // Now the `users` table in the database corresponds to the model definition
+//     return Employee.create({
+//         firstName: 'test',
+//         lastName: 'employee',
+//         age: 30
+//     });
+// });
 
-
-    sequelize
-        .authenticate()
-        .then(() => {
-            console.log('Connection has been established successfully.');
-        })
-        .catch(err => {
-            console.error('Unable to connect to the database:', err);
-        });
-    Employee = EmployeeModel(sequelize, Sequelize)
-
-// Note: using `force: true` will drop the table if it already exists
-    Employee.sync({force: true}).then(() => {
-        // Now the `users` table in the database corresponds to the model definition
-        return Employee.create({
-            firstName: 'test',
-            lastName: 'employee',
-            age:30
-        });
-    });
-
-}
 
 // Option 2: Using a connection URI
 // const sequelize = new Sequelize('postgres://user:pass@example.com:5432/dbname');
 
 // rule for cron job
 var rule = new schedule.RecurrenceRule();
-rule.second = 15;
+rule.second = 35;
 
-var j = schedule.scheduleJob(rule, function(fireDate){
+Employee = EmployeeModel(sequelize, Sequelize)
+
+var j = schedule.scheduleJob(rule, function (fireDate) {
 
     Employee.findAll().then(employees => {
         request.post({
-            headers: {'content-type' : 'application/json'},
-            url:     'http://localhost:8080/api/person',
+            headers: {'content-type': 'application/json'},
+            url: 'http://192.168.10.25:8080/api/person',
             body: JSON.stringify(employees)
-        }, function(error, response, body){
+        }, function (error, response, body) {
             console.log("response is: ", body);
+            if (error) {
+                console.log(error);
+            }
         });
     });
 
     console.log('This job was supposed to run at ' + fireDate + ', but actually ran at ' + new Date());
 });
 
-request('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY', { json: true }, (err, res, body) => {
-    if (err) { return console.log(err); }
-    console.log(body.url);
-    console.log(body.explanation);
-});
-
-databaseConfig(connectionUrl);
 
 app.post("/api/db-config", function (req, res) {
     databaseConfig(req.body.connectionUrl);
     res.send(200);
 });
+
+app.post("/api/check-connection", function (req, res) {
+    sequelize
+        .authenticate()
+        .then(() => {
+            console.log('Connection has been established successfully.');
+            res.send(200)
+        })
+        .catch(err => {
+            res.send(500)
+            console.error('Unable to connect to the database:', err);
+        });
+    ;
+});
+
 
 //GET API
 app.get("/api/employee", function (req, res) {
