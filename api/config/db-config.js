@@ -45,14 +45,14 @@ sequelize
 Employee = EmployeeModel(sequelize, Sequelize)
 
 // Note: using `force: true` will drop the table if it already exists
-Employee.sync({force: true}).then(() => {
-    // Now the `users` table in the database corresponds to the model definition
-    return Employee.create({
-        firstName: 'test',
-        lastName: 'employee',
-        age: 30
-    });
-});
+// Employee.sync({force: true}).then(() => {
+//     // Now the `users` table in the database corresponds to the model definition
+//     return Employee.create({
+//         firstName: 'test',
+//         lastName: 'employee',
+//         age: 30
+//     });
+// });
 
 
 module.exports = {

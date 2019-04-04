@@ -1,5 +1,6 @@
 module.exports = (sequelize, type) => {
-    return sequelize.define('employee', {
+    console.log("from model "+ process.env.PREFIX);
+    return sequelize.define(process.env.PREFIX + 'employee', {
         id: {
             type: type.INTEGER,
             primaryKey: true,
